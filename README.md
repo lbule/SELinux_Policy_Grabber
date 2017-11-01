@@ -26,4 +26,4 @@ Using:
 ```
 bash SELinux_grabber.sh
 ```
--In the **~/out/sepolicy** directory there are files with the necessary rights based on errors in the log.
+- In the **~/out/sepolicy** directory there are files with the necessary rights based on errors in the log.
