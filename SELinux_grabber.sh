@@ -56,7 +56,7 @@ fi
 
 #--------------Getting attributes from log file--------------------------
 while read LINE; do
-read SERVICE_NAME < <(echo $LINE | grep -o "I [a-z,0-9,_, ]* : " | grep -o "[a-z0-9]*")
+read SERVICE_NAME < <(echo $LINE | grep -o "I [a-z,0-9,_, ]*: " | grep -o "[a-z0-9]*")
 read SERVICE_PERM < <(echo $LINE | grep -o "{ [a-z_]* }" | grep -o "[a-z_]*")
 read SERVICE_TYPE_CHECK < <(echo $LINE | grep -o "object_r:[a-z_]*:" | grep -o ":[a-z_]*:" | grep -o "[a-z]*")
 read SERVICE_TYPE2 < <(echo $LINE | grep -o "tclass=[a-z_]* " | grep -o "=[a-z_]*" | grep -o "[a-z_]*")
