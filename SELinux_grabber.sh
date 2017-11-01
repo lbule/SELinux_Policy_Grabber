@@ -13,7 +13,7 @@ txtrst=$(tput sgr0)
 clear
 mkdir -p ~/out/sepolicy
 #-----------------Edit this before use-------------------
-LOG_FILE=~/log.txt # Edit your sepolicy log errors file here
+LOG_FILE=~/log2.txt # Edit your sepolicy log errors file here
 #--------------------------------------------------------
 
 #-----------------Permission settings-------------------
@@ -57,18 +57,21 @@ fi
 #--------------Getting attributes from log file--------------------------
 while read LINE; do
 read SERVICE_NAME < <(echo $LINE | grep -o "I [a-z,0-9,_, ]*: " | grep -o "[a-z0-9]*")
+if [ -z "$SERVICE_NAME" ]
+then
+    read SERVICE_NAME < <(echo $LINE | grep -o "scontext=u:r:[a-z0-9_]*:s0" | grep -o ":[a-z0-9_]*:s0" | grep -o ":[a-z0-9_]*:" | grep -o "[a-z0-9_]*")
+fi
 read SERVICE_PERM < <(echo $LINE | grep -o "{ [a-z_]* }" | grep -o "[a-z_]*")
 read SERVICE_TYPE_CHECK < <(echo $LINE | grep -o "object_r:[a-z_]*:" | grep -o ":[a-z_]*:" | grep -o "[a-z]*")
-read SERVICE_TYPE2 < <(echo $LINE | grep -o "tclass=[a-z_]* " | grep -o "=[a-z_]*" | grep -o "[a-z_]*")
-#------------------------------------------------------------------------
-
-#-----------------Check for empty variables------------------------------
 if [ -z "$SERVICE_TYPE_CHECK" ]
 then
-  echo "${txtbld}${bldcya}Some types in ${txtbld}${bldblu}$SERVICE_NAME${txtrst}${bldcya} are ${bldred}EMPTY${txtrst}${bldcya}, please check it manualy.${txtrst}"
-else
-  read SERVICE_TYPE < <(echo $LINE | grep -o "object_r:[a-z_]*:" | grep -o ":[a-z_]*:" | grep -o "[a-z]*")
-fi 
+    read SERVICE_TYPE < <(echo $LINE | grep -o "tcontext=u:r:[a-z0-9_]*:s0" | grep -o ":[a-z0-9_]*:s0" | grep -o ":[a-z0-9_]*:" | grep -o "[a-z0-9_]*")
+fi
+read SERVICE_TYPE2 < <(echo $LINE | grep -o "tclass=[a-z_]* " | grep -o "=[a-z_]*" | grep -o "[a-z_]*")
+if [ -z "$SERVICE_TYPE2" ]
+then
+    read SERVICE_TYPE2 < <(echo $LINE | grep -o "tclass=[a-z_]*" | grep -o "=[a-z_]*" | grep -o "[a-z_]*")
+fi
 #------------------------------------------------------------------------
 
 #-----------------Write collected data to *.te files---------------------
